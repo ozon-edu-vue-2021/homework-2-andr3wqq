@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <h2>A JSON Tree View Component in Vue.js</h2>
-    <tree-view></tree-view>
+    <tree-view
+        @selected="selectHandler"/>
   </div>
 </template>
 
@@ -12,6 +13,14 @@ export default {
   name: 'App',
   components: {
     TreeView
+  },
+  data: () => ({
+    selectedNode: null
+  }),
+  methods: {
+    selectHandler(node) {
+      this.selectedNode = node;
+    }
   }
 }
 </script>

@@ -3,6 +3,7 @@
     <ul>
       <tree-view-item
           :item="treeData"
+          @selected="selectHandler"
       ></tree-view-item>
     </ul>
   </div>
@@ -18,6 +19,11 @@ export default {
   data: () => ({
     treeData: json,
   }),
+  methods: {
+    selectHandler(node) {
+      this.$emit('selected', node);
+    },
+  }
 };
 </script>
 

@@ -1,17 +1,20 @@
 <template>
-  <li>
-    <span
-        :class="['tree-view--item', { 'bold': isFolder, 'link': isLink }]"
-        @click="toggleHandler">
+  <li class="tree-view--item">
+    <input type="radio" name="radio" :id="itemId" :value="item.name">
+    <label :class="{ 'bold': isFolder, 'link': isLink }"
+           :for="itemId"
+           @click="toggleHandler"
+           key="label">
       <span v-if="isFolder">[{{ isOpen ? '-' : '+' }}]</span>
       {{ item.name }}
-    </span>
+    </label>
     <ul v-show="isOpen" v-if="isFolder">
       <tree-view-item
           class="tree-view--item"
           v-for="(child, index) in item.contents"
           :key="index"
           :item="child"
+          @selected="selectHandler"
       ></tree-view-item>
     </ul>
   </li>
@@ -42,30 +45,70 @@ type Item = Directory | File | Link;
 export default {
   name: "TreeViewItem",
   props: {
-    item: Object
+    item: {
+      type: Object,
+      required: true
+    },
   },
   data: () => ({
-    isOpen: false
+    isOpen: false,
+    isSelected: false,
+    itemId: ''
   }),
   computed: {
-    isFolder: function () {
+    isFolder() {
       return this.item.type === 'directory' && this.item.contents.length;
     },
-    isLink: function () {
+    isLink() {
       return this.item.type === 'link';
     },
   },
   methods: {
-    toggleHandler: function () {
+    selectHandler(node) {
+      this.isSelected = null;
+      this.isSelected = this.itemId;
+      this.$emit('selected', node);
+    },
+    toggleHandler() {
       if (this.isFolder) {
         this.isOpen = !this.isOpen;
       }
+      this.selectHandler(this);
     },
+  },
+  created() {
+    this.itemId = `${this.item.name}_${this.item.type}_${this._uid}`;
   }
 };
 </script>
 
-<style>
+<style scoped>
+ul .tree-view--item :hover:before {
+  background: rgba(190, 235, 255, 0.3);
+}
+
+ul .tree-view--item input[type='radio'] {
+  display: none;
+}
+
+ul .tree-view--item input[type='radio']:checked + label:before {
+  background: rgba(83, 215, 220, 0.3);
+}
+
+ul label {
+  cursor: pointer;
+  user-select: none;
+}
+
+ul label:before {
+  box-sizing: border-box;
+  content: '';
+  height: 21px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
 .tree-view--item {
   cursor: pointer;
 }
@@ -77,9 +120,5 @@ export default {
 .link {
   color: green;
   text-decoration: underline;
-}
-
-.selected {
-  color: blue;
 }
 </style>
