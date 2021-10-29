@@ -1,17 +1,26 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h2>A JSON Tree View Component in Vue.js</h2>
+    <tree-view
+        @selected="selectHandler"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TreeView from './components/TreeView.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TreeView
+  },
+  data: () => ({
+    selectedNode: null
+  }),
+  methods: {
+    selectHandler(node) {
+      this.selectedNode = node;
+    }
   }
 }
 </script>
@@ -24,5 +33,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+ul {
+  padding-left: 1em;
+  line-height: 1.5em;
+  list-style-type: none;
 }
 </style>
